@@ -1,0 +1,30 @@
+version: "3.1"
+
+volumes:
+  database:
+
+services:
+    spoke-phone-db:
+      image: mariadb:10.6.5
+      container_name: spoke-phone-db
+      environment:
+        - MYSQL_ROOT_PASSWORD=password
+        - MYSQL_DATABASE=spoke-phone
+        - MYSQL_USER=buddyloans
+        - MYSQL_PASSWORD=buddyloans
+      ports:
+        - "7790:3306"
+
+    spoke-phone-app:
+      build:
+        context: .
+      container_name: spoke-phone-manager
+      environment:
+        - PHP_IDE_CONFIG=serverName=spoke-phone-manager
+      working_dir: /usr/src/spoke-phone-manager
+      volumes:
+        - ./:/usr/src/spoke-phone-manager
+      ports:
+        - "90:80"
+      links:
+        - spoke-phone-db
